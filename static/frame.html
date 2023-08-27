@@ -10,6 +10,17 @@
         }
     </style>
     <script src="/socket.io.min.js"></script>
+    <script type="text/javascript">
+        const socket = io('localhost:3000', {transports: ["websocket"]});
+
+        socket.on("connect", () => {
+            console.log('client connect')
+        })
+        socket.on("total", (count) => {
+            console.log('event total', count)
+            document.getElementById('text').innerHTML = count
+        });
+    </script>
 </head>
 <body>
 <div class="text" id="text">

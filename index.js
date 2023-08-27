@@ -18,7 +18,15 @@ const io           = new Server(serverSocket, {
 io.on('connection', (socket) => {
     console.log('a user connected' , io.engine.clientsCount);
 
-    socket.broadcast.emit("change", io.engine.clientsCount);
+    socket.broadcast.emit("total", io.engine.clientsCount);
+
+    socket.conn.on("close", (reason) => {
+        console.log('a user disconnected:' + reason, io.engine.clientsCount);
+    });
+
+    socket.on('data', (arg) => {
+        socket.broadcast.emit("data", arg);
+    })
 });
 serverSocket.listen(3000, () => {
     console.log('Socket listening on *:3000');

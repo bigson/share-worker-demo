@@ -1,5 +1,29 @@
+importScripts('./socket.io.min.js')
 const socket = io('localhost:3000', { transports: ["websocket"] });
 
-socket.on("change", (total) => {
-    document.querySelector('#text').innerHTML = total
-});
+onconnect = function (event) {
+    console.log('share worker')
+    const port = event.ports[0];
+
+    socket.on("connect", () => {
+        console.log('client connect')
+        port.postMessage(['connect']);
+    })
+    socket.on("total", (count) => {
+        console.log('event total', count)
+        port.postMessage(['total', count]);
+    });
+
+    port.onmessage = function (e) {
+        console.log('port.onmessage', e)
+        let [type, ...params] = e.data
+
+        switch(type){
+            case 'workerData':
+                socket.emit('data', params[0])
+                break;
+        }
+        // const workerResult = `Result: ${e.data[0] * e.data[1]}`;
+        // port.postMessage(workerResult);
+    };
+};
