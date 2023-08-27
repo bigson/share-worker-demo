@@ -1,5 +1,4 @@
 const myWorker = new SharedWorker("/worker.js");
-console.log(myWorker)
 
 myWorker.port.onmessage = (e) => {
     // result1.textContent = e.data;
@@ -15,11 +14,12 @@ myWorker.port.onmessage = (e) => {
                 document.getElementById('logs').value += ("\nTổng số kết nối hiện tại" + total)
             }
             break;
+        case 'data':
+            document.getElementById('logs').value += ("\nData:" + total)
     }
 };
-// myWorker.port.start();
 
-function send(argument) {
+function send() {
     myWorker.port.postMessage(['workerData', document.getElementById('send').value]);
     document.getElementById('send').value = ''
 }
