@@ -18,18 +18,23 @@ const io           = new Server(serverSocket, {
 io.on('connection', (socket) => {
     console.log('a user connected' , io.engine.clientsCount);
 
+    // trường hợp connect dạng bt thường thì thông báo cho các client khác
+    socket.broadcast.emit("total", io.engine.clientsCount);
+
     socket.conn.on("close", (reason) => {
         console.log('a user disconnected:' + reason, io.engine.clientsCount);
         socket.broadcast.emit("total", io.engine.clientsCount);
     });
 
+    socket.on("getTotal", () => {
+        // trường hợp sd share worker thì gọi event này
+        socket.emit("total", io.engine.clientsCount);
+        socket.broadcast.emit("total", io.engine.clientsCount);
+    });
+
     socket.on('data', (arg) => {
-        console.log('server on data:', arg)
-        socket.broadcast.emit("data", arg, (error, response) => {
+        socket.emit("data", arg, (error, response) => {
             console.log(error, response, 'data')
-        });
-        socket.broadcast.emit("data2", arg, (error, response) => {
-            console.log(error, response, 'data2')
         });
     })
 
@@ -43,5 +48,5 @@ const app = express();
 const server = http.createServer(app);
 app.use('/', express.static('static'))
 server.listen(9119, () => {
-    console.log('server listening on *:8000');
+    console.log('server listening on *:9119');
 });
