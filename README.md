@@ -13,3 +13,10 @@ npm start
 3. Test:
 + Không sử dụng share worker: http://localhost:9119
 + Sử dụng share worker: http://localhost:9119/share_worker.html
+
+4. Debug share worker:
+```
+truy cập url trên chrome:
+
+chrome://inspect/#workers
+```
